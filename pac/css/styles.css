@@ -1,0 +1,127 @@
+/* globales */
+
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
+    font-family: var(--fuentePrincipal);
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
+
+:root{
+    --fuentePrincipal: "Lato";
+    --colorPrincipal: #4b2ca1;
+}
+
+
+h1 {
+    font-size: 3.8rem;
+}
+h2 {
+    font-size: 3.4rem;
+}
+h3 {
+    font-size: 3rem;
+}
+h4 {
+    font-size: 2.6rem;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* boton */
+
+.boton{
+   
+    font-weight: bold;
+    text-decoration: none;
+    padding: 1rem 3rem;
+    text-align: center;
+    border-radius: .5rem;
+    border: none;
+}
+
+.boton:hover{
+    opacity: .8;
+    cursor: pointer;
+}
+
+/* header */
+
+.header{
+    background-color: #333333;
+}
+
+.header-barra{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    max-width: 80%;
+    margin: auto;
+}
+
+.header-barra input{
+    padding: 1rem;
+    background-color: #505050;
+    border: none;
+    margin-left: 1rem;
+    color: white;
+    border-radius: .5rem;
+}
+
+.header-barra input[type=submit]{
+    padding: auto;
+    background-color: var(--colorPrincipal);
+    color: white;
+    padding: 1rem 3rem;
+}
+
+.header-barra p{
+    font-size: 1.6rem;
+}
+
+.user-login{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.registro-button{
+    background-color: white;
+    color: var(--colorPrincipal);
+}
+
+.header-login{
+   display: flex;
+   
+   justify-content: space-between;
+   gap: 1rem;
+}
+
+
+/* main */
+
+.main{
+    background-color: #f7f7f7;
+}
+
+.noticias-container{
+    max-width: 80%;
+    margin: auto;
+}
+
+.noticias-form label{
+    font-size: 1.4rem;
+}
