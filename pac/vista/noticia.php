@@ -1,20 +1,33 @@
 
 <?php 
+
         require "../controlador/controlador.php";
         $id = $_GET["id"];
        $noticia = mostrarNoticia($id);
     
         include "header.php";
+
+       
     ?>
     
-    <hr>
-    <h1><?php echo $noticia['titulo']; ?></h1>
+        <main class="noticia-main">
     
-    <p>Fecha de publicación: <?php echo $noticia['fecha']; ?></p>
-    <p>Autor: <?php echo mostrarUsuario($noticia["id_autor"]); ?></p>
-
-    <p><?php echo $noticia['cuerpo']; ?></p>
-
-    <button><a  href="index.php">Volver a Inicio</a></button>
+    
+                <div class="noticia w60">
+                    <h1 class="titulo-noticia"><?php echo $noticia['titulo']; ?></h1>
+    
+    
+                    <p class="descripcion-noticia"><?php echo nl2br($noticia['cuerpo']); ?></p>
+                    <p class="detalle-noticia">Fecha de publicación: <?php echo $noticia['fecha']; ?></p>
+                    <p class="detalle-noticia">Autor: <?php echo mostrarUsuario($noticia["id_autor"]); ?></p>
+    
+                    <button class="boton editar blanco novisited"><a  href="index.php">Volver a Inicio</a></button>
+                </div>
+        </main>
+        
+        <?php
+            include "footer.php";
+        ?>
+    
 </body>
 </html>

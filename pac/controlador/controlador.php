@@ -17,24 +17,29 @@ function showListaNoticias($orderBy, $orderDir){
     } else {
         while ($fila = mysqli_fetch_assoc($datos)) { //introducimos en la tabla una línea por noticia
     ?>
-            <tr>
-                <td><a href="noticia.php?id=<?= $fila["id"] ?>"><?= $fila["titulo"] ?></a></td>
-                <td><?= $fila["fecha"] ?></td>
-                <td><?= $fila["nombre_autor"] ?></td>
+            <div class="noticia">
+                <h3 class="titulo-noticia novisited"><a  href="noticia.php?id=<?= $fila["id"] ?>"><?= $fila["titulo"] ?></a></h3>
+                <p class="noticia-cuerpo"><?=  substr($fila["cuerpo"], 0, 200); ?>...</p>
+
+                <hr>
+                <p class="info-noticia"><span class="bold">Publicada el: </span><?= $fila["fecha"] ?> | <span class="bold">Autor: </span><span class="autor bold"><?= $fila["nombre_autor"] ?></span></p>
                 <!-- botones solo para registrados y logeados -->
                 <?php
                 if (isset($_SESSION['usuario'])) { ?>
-                <td><button><a href="editar.php?id=<?= $fila["id"] ?>">Editar</a></button></td>
-                <td>
-                    <!-- form para enviar la solicitud de eliminar noticia -->
-                    <form method="POST">
-                        <!-- input hidden, envía datos de forma oculta -->
-                        <input type="hidden" name="id_eliminar" value="<?= $fila["id"] ?>">
-                        <input type="submit" value="Eliminar">
-                    </form>
-                </td>
+                <div class="botones-usuario">
+
+                <button class="boton editar blanco" onclick="window.location.href='editar.php?id=<?= $fila["id"] ?>'">Editar</button>
+                    
+                        <!-- form para enviar la solicitud de eliminar noticia -->
+                        <form method="POST">
+                            <!-- input hidden, envía datos de forma oculta -->
+                            <input type="hidden" name="id_eliminar" value="<?= $fila["id"] ?>">
+                            <input class="boton eliminar" type="submit" value="Eliminar">
+                        </form>
+                </div>
+                
                 <?php }?>
-            </tr>
+            </div>
     <?php
         }
     }
@@ -72,6 +77,17 @@ function mostrarUsuario($id){
 
 function insertNoticia($id_usuario){
 
+    //Array con mensajes de errores
+    $errores = [];
+
+    $titulo = "";
+    $fecha = "";
+    $cuerpo = "";
+
+    
+   
+
+
     $id_autor = $id_usuario;
 
     if (isset($_POST['titulo']) && isset($_POST['cuerpo'])  && isset($_POST['fecha'])) {
@@ -79,7 +95,23 @@ function insertNoticia($id_usuario){
         $cuerpo = $_POST['cuerpo'];
         $fecha = $_POST['fecha']; 
 
-        crearNoticia($id_autor, $titulo, $cuerpo, $fecha);
+        if(!$titulo){
+            $errores[] = "Debes añadir un título";
+        }
+        if(!$fecha){
+            $errores[] = "Debes añadir una fecha";
+        }
+        if( strlen ($cuerpo) < 50){
+            $errores[] = "El cuerpo es obligatorio y debe tener al menos 50 caracteres";
+            
+        }
+            
+        if(empty($errores)){
+            crearNoticia($id_autor, $titulo, $cuerpo, $fecha);
+        }else{
+            return $errores;
+        }
+        
         
         
     } else {
@@ -96,7 +128,24 @@ if (isset($_POST['titulo']) && isset($_POST['cuerpo']) && isset($_POST['fecha'])
     $cuerpo = $_POST['cuerpo'];
     $fecha = $_POST['fecha'];
 
+
+    if(!$titulo){
+        $errores[] = "Debes añadir un título";
+    }
+    if(!$fecha){
+        $errores[] = "Debes añadir una fecha";
+    }
+    if( strlen ($cuerpo) < 50){
+        $errores[] = "El cuerpo es obligatorio y debe tener al menos 50 caracteres";
+        
+    }
+        
+    if(empty($errores)){
+
     actualizarNoticia($id, $titulo, $cuerpo, $fecha);
+    }else{
+        return $errores;
+    }
 
     
 } else{
@@ -162,10 +211,14 @@ function loginUsuario(){
                 return true;
             } else {
                 // Contraseña incorrecta
-               
-                echo "Contraseña incorrecta";
+               $errorPassword = "Contraseña incorrecta";
+                return $errorPassword;
             }
         } 
+        else {
+            $errorUsuario = "Usuario no encontrado";
+            return $errorUsuario;
+        };
         
     } 
 }
@@ -176,7 +229,13 @@ function loginUsuario(){
 function logoutUsuario(){
     session_unset(); // Limpiar todas las variables de sesión
     session_destroy(); // Destruir la sesión
+    header("Location: index.php");
+
+    
 }
+
+
+
 
 
 ?>

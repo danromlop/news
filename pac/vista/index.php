@@ -13,6 +13,7 @@
                 deleteNoticia();
             }
 
+            
 
             //incluimos header
         include "header.php";
@@ -27,7 +28,7 @@
                 <label for="ordenar">Ordenar por:</label>
                 <!-- select para ordenar por titulo, fecha o autor -->
                 <!-- cada opción tiene un condicional para que se mantenga la elegida cada vez que se presiona el botón ordenar -->
-                <select name="orderBy">
+                <select class="ordenar-opciones" name="orderBy">
                     <option value="titulo" <?php if(isset($_POST['orderBy']) && $_POST['orderBy'] == 'titulo') echo 'selected'; ?> >Título</option>
                     <option value="fecha" <?php if(isset($_POST['orderBy']) && $_POST['orderBy'] == 'fecha') echo 'selected'; ?>>Fecha</option>
                     <option value="id_autor" <?php if(isset($_POST['orderBy']) && $_POST['orderBy'] == 'id_autor') echo 'selected'; ?>>Autor</option>
@@ -38,32 +39,33 @@
                 <input type="radio" id="DESC" name="orderDir" value="DESC" <?php if(isset($_POST['orderDir']) && $_POST['orderDir'] == 'DESC') echo 'checked';?>>
                 <label for="DESC">Descendente</label>
                 <!-- submit -->
-                <input  type="submit" value="Ordenar">
+                <input class="ordenar-button"  type="submit" value="Ordenar">
             </form>
 
 
-            <table>
-                <tr>
-                    <th>Título noticia</th>
-                    <th>Fecha</th>
-                    <th>Autor</th>
-                </tr>
+            <div class="lista-container">
+                
         
                 <?php showListaNoticias($orderBy, $orderDir); ?>
         
         
                 <!--fin tabla-->
-            </table>
+            </div>
         </div>
 
+        <?php //mostrar solo si el usuario está logeado
+            if (isset($_SESSION['usuario'])) { ?>
+            <div class="crear-container">
+                <button class="boton editar blanco novisited" onclick="window.location.href='crear.php'">Añadir nueva noticia</button>
+            </div>
+        <?php }?>
     </main>
 
 
-    <hr>
-    <?php //mostrar solo si el usuario está logeado
-        if (isset($_SESSION['usuario'])) { ?>
-        <button><a href="crear.php">Añadir nueva noticia</a></button>
-    <?php }?>
+    <?php
+        include "footer.php";
+    ?>
+
 
 </body>
 </html>

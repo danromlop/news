@@ -120,7 +120,7 @@ function crearNoticia($id_autor, $titulo, $cuerpo, $fecha){
     if($resultado){
         //Rediccionaremos al usuario a la pagina principal al crear la noticia
 
-        header("Location: index.php");
+         header("Location: index.php");
     } else if(!$resultado){
         echo "Error al realizar la consulta" . mysqli_error($db);
     }
@@ -210,7 +210,7 @@ function autenticarUsuario($email){
         return $usuarioLogin;
 
     }else{
-        echo "Usuario no encontrado";
+        return false;
     }
 
     cerrarConexion($db);
