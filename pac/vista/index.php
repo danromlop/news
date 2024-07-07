@@ -16,7 +16,7 @@
             
 
             //incluimos header
-        include "header.php";
+        include "header.php"
     
     ?>
  <!-- inicio página -->

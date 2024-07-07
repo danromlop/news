@@ -237,7 +237,7 @@ a {
 
 .main{
     background-color: #f7f7f7;
-    padding-bottom: 12rem;
+    padding-bottom: 5rem;
 }
 
 .fondo-main{
@@ -293,6 +293,10 @@ a {
     flex-direction: column;
     gap: 2rem;
 
+}
+
+.noticia h1{
+    margin-top: 0;
 }
 
 
@@ -364,6 +368,16 @@ a {
     color: white;
 }
 
+.leer-mas{
+    color:#5e36cc;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.leer-mas:hover{
+    color:#8b62fc;
+}
+
 /* boton crear */ 
 
 .crear-container{
@@ -432,13 +446,15 @@ a {
 
 .formulario-crear input[type=submit]{
     margin: 1rem 0;
-    width: 10%;
+   
+    max-width: 20%;
     background-color: #5e36cc;
     color: white;
 }
 
 .formulario-crear textarea{
     font-size: 1.4rem;
+    max-width: 100%;
 }
 
 /* registro */
@@ -476,7 +492,8 @@ a {
 /* mensaje error */
 
 .alerta{
-    max-width: 60%;
+    width: 60%;
+   
     padding: .5rem;
     text-align: center;
     color: white;

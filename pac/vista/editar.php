@@ -63,7 +63,7 @@
             <br>
             <label for="cuerpo">Cuerpo de noticia:</label>
             <br>
-            <textarea id="cuerpo" name="cuerpo" rows="20" cols="120"> <?php echo $noticia["cuerpo"] ?></textarea>
+            <textarea id="cuerpo" name="cuerpo" rows="20" cols="120"><?php echo $noticia["cuerpo"]?></textarea>
             <br>
             <input class="boton" type="submit" value="Editar noticia">
         </form>

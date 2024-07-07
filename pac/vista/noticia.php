@@ -21,7 +21,7 @@
                     <p class="detalle-noticia">Fecha de publicación: <?php echo $noticia['fecha']; ?></p>
                     <p class="detalle-noticia">Autor: <?php echo mostrarUsuario($noticia["id_autor"]); ?></p>
     
-                    <button class="boton editar blanco novisited"><a  href="index.php">Volver a Inicio</a></button>
+                    <button class="boton editar blanco novisited"  onclick="window.location.href='index.php'">Volver a Inicio</button>
                 </div>
         </main>
         

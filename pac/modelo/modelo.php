@@ -23,6 +23,11 @@ function cerrarConexion($conexion){
     mysqli_close($conexion);
 }
 
+// FUNCIONES CRUD
+
+// READ - LEER
+
+
 function getListaNoticias($orderBy, $orderDir){
 
     //abrimos conexión
@@ -52,14 +57,27 @@ function getListaNoticias($orderBy, $orderDir){
         ORDER BY $orderBy $orderDir;";
     }
     
-   $result = mysqli_query($db, $sql);
+    $stmt = $db->prepare($sql);
+    if ($stmt === false) {
+        //Manejo de errores si la preparación de la consulta falla
+        error_log('MySQL prepare statement failed: ' . $db->error);
+        cerrarConexion($db);
+        return false;
+    }
 
-   if(mysqli_num_rows($result) > 0){
+    //Ejecutar la consulta preparada
+    $stmt->execute();
+
+    //Obtener resultados
+    $result = $stmt->get_result();
+
+   if($result->num_rows > 0){
+    
        return $result; //devolvemos resultado de consulta a la función controlador
    } else{
        echo "No hay nada en la tabla noticia";
    }
-
+    $stmt->close();
     cerrarConexion($db);
 
 }
@@ -69,16 +87,30 @@ function getUsuario($id){
 
     $db = crearConexion();
 
-    $sql = "SELECT nombre FROM usuario WHERE id = $id";
- 
-    $result = mysqli_query($db, $sql);
+    $sql = "SELECT nombre FROM usuario WHERE id = ?";
+
+    $stmt = mysqli_prepare($db, $sql);
+
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . mysqli_error($db);
+        cerrarConexion($db);
+        return false;
+    }
+
+    $stmt->bind_param("i", $id);
+
+    $stmt->execute();
+    
+    $result = $stmt->get_result();
  
     if(mysqli_num_rows($result) > 0){
+
         return $result;
     } else{
         echo "No hay nada en la tabla usuario";
     }
  
+     $stmt->close();
      cerrarConexion($db);
 
 }
@@ -88,9 +120,21 @@ function getNoticia($id){
 
     $db = crearConexion();
 
-    $sql = "SELECT * FROM noticia WHERE id = $id";
+    $sql = "SELECT * FROM noticia WHERE id = ?";
  
-    $result = mysqli_query($db, $sql);
+    $stmt = mysqli_prepare($db, $sql);
+
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . mysqli_error($db);
+        cerrarConexion($db);
+        return false;
+    }
+
+    $stmt->bind_param("i", $id);
+
+    $stmt->execute();
+    
+    $result = $stmt->get_result();
  
     if(mysqli_num_rows($result) > 0){
          
@@ -106,17 +150,28 @@ function getNoticia($id){
 
 
 
-// --------------------------- CREAR NOTICIA --------------------
+// CREATE - CREAR 
+
 
 function crearNoticia($id_autor, $titulo, $cuerpo, $fecha){
     
     $db = crearConexion();
-
+    
     //realizamos el INSERT INTO para añadir la noticia a la BBDD
-    $sql = "INSERT INTO noticia (id_autor, titulo, cuerpo, fecha) VALUES ('$id_autor', '$titulo', '$cuerpo', '$fecha')";
+    $sql = "INSERT INTO noticia (id_autor, titulo, cuerpo, fecha) VALUES (?, ?, ?, ?)";
 
-    $resultado = mysqli_query($db, $sql);
+    $stmt = mysqli_prepare($db, $sql);
 
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . mysqli_error($db);
+        cerrarConexion($db);
+        return false;
+    }
+
+    $stmt->bind_param("isss", $id_autor, $titulo, $cuerpo, $fecha);
+
+    $resultado = $stmt->execute();
+   
     if($resultado){
         //Rediccionaremos al usuario a la pagina principal al crear la noticia
 
@@ -129,14 +184,24 @@ function crearNoticia($id_autor, $titulo, $cuerpo, $fecha){
 }
 
 
-//------------ ACTUALIZAR NOTICIA
+// UPDATE - ACTUALIZAR 
 
 function actualizarNoticia($id, $titulo, $cuerpo, $fecha){
     $db = crearConexion();
     
-    $sql = "UPDATE noticia SET titulo='$titulo', cuerpo='$cuerpo', fecha='$fecha' WHERE id='$id'";
+    $sql = "UPDATE noticia SET titulo=?, cuerpo=?, fecha=? WHERE id=?";
 
-    $resultado = mysqli_query($db, $sql);
+    $stmt = mysqli_prepare($db, $sql);
+
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . mysqli_error($db);
+        cerrarConexion($db);
+        return false;
+    }
+
+    $stmt->bind_param("sssi", $titulo, $cuerpo, $fecha, $id);
+
+    $resultado = $stmt->execute();
 
     if($resultado){
         //Rediccionaremos al usuario a la pagina principal al crear la noticia
@@ -151,15 +216,25 @@ function actualizarNoticia($id, $titulo, $cuerpo, $fecha){
 
 
 
-//---------------------- ELIMINAR NOTICIA
+// DELETE - ELIMINAR 
 
 function eliminarNoticia($id){
 
     $db = crearConexion();
 
-    $sql = "DELETE FROM noticia WHERE id = $id;";
+    $sql = "DELETE FROM noticia WHERE id = ?;";
 
-    $resultado = mysqli_query($db, $sql);
+    $stmt = mysqli_prepare($db, $sql);
+
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . mysqli_error($db);
+        cerrarConexion($db);
+        return false;
+    }
+
+    $stmt->bind_param("i", $id);
+
+    $resultado = $stmt->execute();
 
     if($resultado){
         //Rediccionaremos al usuario a la pagina principal al crear la noticia
@@ -173,48 +248,92 @@ function eliminarNoticia($id){
 
 }
 
-// ------------------ CREAR USUARIO
+// GESTION USUARIOS
+
+//  CREAR USUARIO
 function crearUsuario($nombre, $email, $contrasena){
-    
+
     $db = crearConexion();
+    
+    
+    $hashedPassword = password_hash($contrasena, PASSWORD_DEFAULT);
 
+    
+    $sql = "INSERT INTO usuario (nombre, email, contrasena) VALUES (?, ?, ?)";
 
-    $sql = "INSERT INTO usuario (nombre, email, contrasena) VALUES ('$nombre', '$email', '$contrasena')";
-
-    $resultado = mysqli_query($db, $sql);
-
-    if($resultado){
-        //Rediccionaremos al usuario a la pagina principal al crear la noticia
-
-        header("Location: index.php");
-    } else if(!$resultado){
-        echo "Error al realizar la consulta" . mysqli_error($db);
+   
+    $stmt = $db->prepare($sql);
+    if ($stmt === false) {
+        //Manejo de errores
+        error_log('MySQL prepare statement failed: ' . $db->error);
+        echo "Error en la preparación de la consulta.";
+        cerrarConexion($db);
+        return false;
     }
 
+  
+    $stmt->bind_param('sss', $nombre, $email, $hashedPassword);
+
+   
+    if ($stmt->execute()) {
+        //Redirigimos al usuario a la página principal en caso de éxito
+        header("Location: index.php");
+        exit(); // Asegura que el script se detenga después de redirigir
+    } else {
+        // Manejo de errores 
+        error_log('MySQL execute statement failed: ' . $stmt->error);
+        echo "Error al realizar la consulta: " . $stmt->error;
+    }
+
+    //cerramos stmt y conexion a bbdd
+    $stmt->close();
+
+  
     cerrarConexion($db);
+
+    return true;
 }
 
-//--------------- AUTENTICAR USUARIO
+// AUTENTICAR USUARIO
 
 function autenticarUsuario($email){
 
     $db = crearConexion();
 
-    $sql = "SELECT * FROM usuario WHERE email = '$email'";
-    $resultado = mysqli_query($db, $sql);
-
-    $usuarioLogin = mysqli_fetch_assoc($resultado);
-    // Verificar si se encontró un usuario con el email dado
-    if ($usuarioLogin) {
-
-        return $usuarioLogin;
-
-    }else{
+    $sql = "SELECT * FROM usuario WHERE email = ?";
+    $stmt = $db->prepare($sql);
+    if ($stmt === false) {
+        
+        error_log('MySQL prepare statement failed: ' . $db->error);
         return false;
     }
 
+    //vinculamos el marcador ? con el email en la consulta sql
+     $stmt->bind_param('s', $email);
+
+   
+    if (!$stmt->execute()) {
+        
+        error_log('MySQL execute statement failed: ' . $stmt->error);
+        return false;
+    }
+
+   
+    $resultado = $stmt->get_result();
+    
+    $usuarioLogin = $resultado->fetch_assoc();
+
+    //cerramos stmt y conexion a bbdd
+    $stmt->close();
+
     cerrarConexion($db);
 
+    //verificacion email
+    if ($usuarioLogin) {
+        return $usuarioLogin;
+    } else {
+        return false;
+    }
 
 }
 

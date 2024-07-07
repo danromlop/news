@@ -2,7 +2,11 @@
 
 include "../modelo/modelo.php";
 
-//mostrar noticias
+// FUNCIONES CRUD
+
+// READ - LEER
+
+
 function showListaNoticias($orderBy, $orderDir){
     //obtiene el valor del formulario para ordenar las noticias
     if (isset($_POST['orderBy'])) {
@@ -19,7 +23,7 @@ function showListaNoticias($orderBy, $orderDir){
     ?>
             <div class="noticia">
                 <h3 class="titulo-noticia novisited"><a  href="noticia.php?id=<?= $fila["id"] ?>"><?= $fila["titulo"] ?></a></h3>
-                <p class="noticia-cuerpo"><?=  substr($fila["cuerpo"], 0, 200); ?>...</p>
+                <p class="noticia-cuerpo"><?=  substr($fila["cuerpo"], 0, 200); ?>... <a class="leer-mas" href="noticia.php?id=<?= $fila["id"] ?>">Leer Más</a></p>
 
                 <hr>
                 <p class="info-noticia"><span class="bold">Publicada el: </span><?= $fila["fecha"] ?> | <span class="bold">Autor: </span><span class="autor bold"><?= $fila["nombre_autor"] ?></span></p>
@@ -72,7 +76,7 @@ function mostrarUsuario($id){
 
 }
 
-//-------------------------------- CREAR NOTICIA ---------------------------
+// CREATE - CREAR  
 
 
 function insertNoticia($id_usuario){
@@ -85,9 +89,6 @@ function insertNoticia($id_usuario){
     $cuerpo = "";
 
     
-   
-
-
     $id_autor = $id_usuario;
 
     if (isset($_POST['titulo']) && isset($_POST['cuerpo'])  && isset($_POST['fecha'])) {
@@ -120,7 +121,7 @@ function insertNoticia($id_usuario){
 }
 
 
-// -------- ACTUALIZAR
+// UPDATE - ACTUALIZAR
 
 function updateNoticia($id){
 if (isset($_POST['titulo']) && isset($_POST['cuerpo']) && isset($_POST['fecha'])) {
@@ -128,6 +129,7 @@ if (isset($_POST['titulo']) && isset($_POST['cuerpo']) && isset($_POST['fecha'])
     $cuerpo = $_POST['cuerpo'];
     $fecha = $_POST['fecha'];
 
+    //manejo de errores
 
     if(!$titulo){
         $errores[] = "Debes añadir un título";
@@ -157,7 +159,7 @@ if (isset($_POST['titulo']) && isset($_POST['cuerpo']) && isset($_POST['fecha'])
 
 
 
-//------------ ELIMINIAR
+// DELETE - ELIMINIAR
 
 function deleteNoticia(){
     
@@ -171,7 +173,12 @@ function deleteNoticia(){
 
 
 }
-//--- CREAR USUARIO
+
+// GESTION USUARIOS
+
+
+
+// CREAR USUARIO
 
 
 function insertUsuario(){
@@ -192,25 +199,26 @@ function insertUsuario(){
     
 }
 
-// --------- LOGEAR USUARIO
+// LOGEAR USUARIO
 
 
 function loginUsuario(){
     if (isset($_POST['email']) && isset($_POST['password']) ) { //solo se ejecuta la función si el usuario ha introducido email y password
-        
-        $email = $_POST['email'];
+        //sanear email introducido
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $contrasena = $_POST['password'];
+
         $usuario = autenticarUsuario($email);
 
         if ($usuario) {
-            // Verificar si la contraseña coincide
-            if ($contrasena == $usuario['contrasena']) {
-                // Autenticación exitosa
+            //Verificación contraseña 
+            if (password_verify($contrasena, $usuario['contrasena'])) {
+                //Auth OK
                 $_SESSION['id'] = $usuario["id"];
                 $_SESSION['usuario'] = $usuario['nombre']; // Definimos la variable de sesión
                 return true;
             } else {
-                // Contraseña incorrecta
+                //Contraseña incorrecta
                $errorPassword = "Contraseña incorrecta";
                 return $errorPassword;
             }
@@ -224,7 +232,7 @@ function loginUsuario(){
 }
 
 
-// --- deslogear usuario
+// LOGOUT
 
 function logoutUsuario(){
     session_unset(); // Limpiar todas las variables de sesión
