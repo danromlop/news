@@ -7,7 +7,7 @@ MySQL 5.6 o superior
 
 Importar la base de datos:
 
-Localiza el fichero ilernoticias.sql en el directorio del proyecto.
+Localiza el fichero thenews.sql en el directorio del proyecto.
 Importa el fichero SQL en tu servidor MySQL.
 
 Configurar la conexión a la base de datos:
